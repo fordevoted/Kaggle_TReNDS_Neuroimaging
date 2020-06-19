@@ -130,9 +130,9 @@ if __name__ == "__main__":
     # X_train = scaler.fit_transform(X_train)
     # X_test = scaler.transform(X_test)
     #
-    # pca = PCA(n_components=445)  # more than 0.95
-    # X_train = pca.fit_transform(X_train)
-    # X_test = pca.transform(X_test)
+    pca = PCA(n_components=445)  # more than 0.95
+    X_train = pca.fit_transform(X_train)
+    X_test = pca.transform(X_test)
 
     np.random.seed(1964)
     epochs = 200
@@ -141,31 +141,30 @@ if __name__ == "__main__":
     validation_split = 0.2
     input_dim = X_train.shape[1]
     n_out = y_train.shape[1]
-    regularize_rate = 5.0e-4
+    regularize_rate = 5.0e-5
 
     model = Sequential()
-        # input
+    # input
     # model.add(Convolution1D(nb_filter=512, filter_length=1, input_shape=(input_dim, )))
-    model.add(BatchNormalization(input_shape=(input_dim, )))
-    model.add(Dense(512, kernel_initializer="lecun_normal", use_bias=False))
-    model.add(BatchNormalization())
+    model.add(Dense(512, kernel_initializer="lecun_normal",input_shape=(input_dim, )))
+    # model.add(BatchNormalization())
     model.add(Activation('selu'))
-    # model.add(Dropout(0.2))
-
-    model.add(Dense(1024, kernel_initializer="lecun_normal", use_bias=False, kernel_regularizer=regularizers.l2(regularize_rate)))
-    model.add(BatchNormalization())
+    model.add(Dropout(0.2))
+    model.add(Dense(1024, kernel_initializer="lecun_normal", kernel_regularizer=regularizers.l2(regularize_rate),
+                bias_regularizer=regularizers.l2(regularize_rate)))
+    # model.add(BatchNormalization())
     model.add(Activation('selu'))
-    # model.add(Dropout(0.2))
-
-    model.add(Dense(2048, kernel_initializer="lecun_normal", use_bias=False, kernel_regularizer=regularizers.l2(regularize_rate)))
-    model.add(BatchNormalization())
+    model.add(Dropout(0.2))
+    model.add(Dense(2048, kernel_initializer="lecun_normal", kernel_regularizer=regularizers.l2(regularize_rate),
+                bias_regularizer=regularizers.l2(regularize_rate)))
+    # model.add(BatchNormalization())
     model.add(Activation('selu'))
-    # model.add(Dropout(0.4))
-
-    model.add(Dense(256, kernel_initializer="lecun_normal", use_bias=False, kernel_regularizer=regularizers.l2(regularize_rate)))
-    model.add(BatchNormalization())
+    model.add(Dropout(0.4))
+    model.add(Dense(256, kernel_initializer="lecun_normal", kernel_regularizer=regularizers.l2(regularize_rate),
+                bias_regularizer=regularizers.l2(regularize_rate)))
+    # model.add(BatchNormalization())
     model.add(Activation('selu'))
-    # model.add(Dropout(0.2))
+    model.add(Dropout(0.2))
     model.add(Dense(n_out, activation='relu'))
 
     model.compile(loss=weighted_NAE,

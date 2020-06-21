@@ -126,9 +126,9 @@ if __name__ == "__main__":
     y_train = train.drop('Id', axis=1)[TARGET_COLS]
     X_test = test.drop('Id', axis=1)
 
-    # scaler = StandardScaler()
-    # X_train = scaler.fit_transform(X_train)
-    # X_test = scaler.transform(X_test)
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
     #
     # pca = PCA(n_components=445)  # more than 0.95
     # X_train = pca.fit_transform(X_train)

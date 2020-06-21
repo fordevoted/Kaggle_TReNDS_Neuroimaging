@@ -5,5 +5,7 @@ https://www.kaggle.com/c/trends-assessment-prediction
 WIP
 
 ## Performance 
-* BN + PCA + Packet algorithms + sequential model 
->0.15692
+* BN + Packet algorithms + sequential model 
+>0.15623
+* dropout + PCA + Packet algorithms + sequential model
+>0.15577

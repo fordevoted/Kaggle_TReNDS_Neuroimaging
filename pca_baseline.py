@@ -12,7 +12,6 @@ from sklearn.impute import KNNImputer
 import tensorflow as tf
 from keras.callbacks import ModelCheckpoint
 from sklearn.decomposition import PCA, KernelPCA
-from sklearn.manifold import LocallyLinearEmbedding as LLE
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
@@ -64,7 +63,6 @@ model.add(Dense(512, kernel_initializer="lecun_normal", input_shape=(input_dim,)
 # model.add(BatchNormalization())
 model.add(Activation('selu'))
 model.add(Dropout(0.4))
-
 model.add(Dense(512, kernel_initializer="lecun_normal",
                 kernel_regularizer=regularizers.l2(regularize_rate)))
 # model.add(BatchNormalization())

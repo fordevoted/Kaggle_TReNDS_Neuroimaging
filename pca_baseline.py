@@ -48,7 +48,7 @@ train2 = scaler.fit_transform(X_train1)
 pretest2 = scaler.transform(X_pretest1)
 test2 = scaler.transform( test.drop(['Id'], axis=1))
 print(train2.shape)
-pca = KernelPCA(n_components=445)# more than 0.95
+pca = KernelPCA(n_components=450, kernel='cosine')# more than 0.95
 train3 = pca.fit_transform(train2)
 print(train3.shape)
 pretest3 = pca.transform(pretest2)
@@ -63,29 +63,29 @@ model = Sequential()
 model.add(Dense(512, kernel_initializer="lecun_normal", input_shape=(input_dim,)))
 # model.add(BatchNormalization())
 model.add(Activation('selu'))
-model.add(Dropout(0.2))
+model.add(Dropout(0.4))
 
 model.add(Dense(512, kernel_initializer="lecun_normal",
                 kernel_regularizer=regularizers.l2(regularize_rate)))
 # model.add(BatchNormalization())
 model.add(Activation('selu'))
+model.add(Dropout(0.4))
+
+model.add(Dense(256, kernel_initializer="lecun_normal",
+                kernel_regularizer=regularizers.l2(regularize_rate)))
+# model.add(BatchNormalization())
+model.add(Activation('selu'))
 model.add(Dropout(0.2))
 
-model.add(Dense(1024, kernel_initializer="lecun_normal",
-                kernel_regularizer=regularizers.l2(regularize_rate)))
+# model.add(Dense(128, kernel_initializer="lecun_normal",
+#                 kernel_regularizer=regularizers.l2(regularize_rate)))
 # model.add(BatchNormalization())
-model.add(Activation('selu'))
-model.add(Dropout(0.4))
-
-model.add(Dense(128, kernel_initializer="lecun_normal",
-                kernel_regularizer=regularizers.l2(regularize_rate)))
-# model.add(BatchNormalization())
-model.add(Activation('selu'))
-model.add(Dropout(0.4))
+# model.add(Activation('selu'))
+# model.add(Dropout(0.4))
 model.add(Dense(5, activation='relu'))
 
 model = model
-model.compile(loss='mse', optimizer=tf.keras.optimizers.Adam(lr=0.001), metrics=[ weighted_NAE])
+model.compile(loss='mse', optimizer=tf.keras.optimizers.Adam(lr=0.0001), metrics=[ weighted_NAE])
 model.summary()
 
 filepath = "./best.hdf5"
@@ -104,12 +104,12 @@ pred["Id"]=sample_submission.Id
 pred["Predicted"]=model.predict(test3).flatten()
 pred.to_csv('out2.csv', index=False)
 
-plt.plot(history.history['weighted_NAE'])
+# plt.plot(history.history['weighted_NAE'])
 plt.plot(history.history['val_weighted_NAE'])
 plt.title('model weighted_NAE')
 plt.ylabel('loss')
 plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
+plt.legend(['test'], loc='upper left')
 plt.show()
 
 

@@ -75,7 +75,7 @@ numeric_feats = all_data.dtypes[all_data.dtypes != "object"].index
 
 skewed_feats = all_data[numeric_feats].apply(lambda x: skew(x.dropna())).sort_values(ascending=False)
 skewness = pd.DataFrame({'Skew': skewed_feats})
-skewness = skewness[abs(skewness['Skew']) > 0.75]
+skewness = skewness[abs(skewness['Skew']) > 0.5]
 print("There are {} skewed numerical features to Box Cox transform".format(skewness.shape[0]))
 
 skewed_features = skewness.index

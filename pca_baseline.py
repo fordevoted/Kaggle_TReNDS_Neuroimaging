@@ -80,7 +80,7 @@ print("There are {} skewed numerical features to Box Cox transform".format(skewn
 
 skewed_features = skewness.index
 for feat in skewed_features:
-    all_data[feat] = boxcox1p(all_data[feat], 0.45)
+    all_data[feat] = boxcox1p(all_data[feat], 0.5)
 
 # standardize
 scaler = StandardScaler()
@@ -109,11 +109,11 @@ model.add(Dense(512, kernel_initializer="lecun_normal", input_shape=(input_dim,)
 # model.add(BatchNormalization())
 model.add(Activation('selu'))
 model.add(Dropout(0.4))
-model.add(Dense(512, kernel_initializer="lecun_normal",
+model.add(Dense(256, kernel_initializer="lecun_normal",
                 kernel_regularizer=regularizers.l2(regularize_rate)))
 # model.add(BatchNormalization())
 model.add(Activation('selu'))
-model.add(Dropout(0.4))
+model.add(Dropout(0.2))
 
 model.add(Dense(512, kernel_initializer="lecun_normal",
                 kernel_regularizer=regularizers.l2(regularize_rate)))

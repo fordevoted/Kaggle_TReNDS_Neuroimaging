@@ -52,12 +52,20 @@ label = impute.fit_transform(label)
 print("label shape", label.shape)
 
 # increase kurtosis
-label = np.log1p(label)
+# label = np.log1p(label)
 
 # concat to all data
 all_data = pd.concat([train, test], axis=0)
 print("after concat", all_data.shape)
 
+
+# build more feature
+all_data['append_feature1'] = all_data['IC_17'] * all_data['IC_04']
+all_data['append_feature2'] = all_data['IC_14'] * all_data['IC_13']
+all_data['append_feature3'] = all_data['IC_14'] - all_data['IC_22']
+all_data['append_feature4'] = all_data['IC_22'] - all_data['IC_10']
+all_data['append_feature5'] = all_data['IC_02'] * all_data['IC_15'] * all_data['IC_11']
+'''
 # skew data correctness  and Check the skew of all numerical features
 numeric_feats = all_data.dtypes[all_data.dtypes != "object"].index
 
@@ -70,7 +78,7 @@ skewed_features = skewness.index
 lam = 0.15
 for feat in skewed_features:
     all_data[feat] = boxcox1p(all_data[feat], lam)
-
+'''
 # standardize
 scaler = StandardScaler()
 all_data = scaler.fit_transform(all_data)
@@ -136,7 +144,8 @@ model.load_weights(filepath)
 pred = pd.DataFrame()
 pred["Id"] = sample_submission.Id
 
-pred["Predicted"] = np.expm1(model.predict(test).flatten())
+# pred["Predicted"] = np.expm1(model.predict(test).flatten())
+pred["Predicted"] = model.predict(test).flatten()
 pred.to_csv('out2.csv', index=False)
 
 # plt.plot(history.history['weighted_NAE'])

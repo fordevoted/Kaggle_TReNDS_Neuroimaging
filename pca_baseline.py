@@ -3,6 +3,7 @@ import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 # import plotly.offline as py
 # py.init_notebook_mode(connected=True)
 from scipy.special import boxcox1p
+from scipy.stats import boxcox_llf
 from tensorflow.python.keras import regularizers
 
 from tensorflow.python.keras.models import Sequential
@@ -59,13 +60,16 @@ all_data = pd.concat([train, test], axis=0)
 print("after concat", all_data.shape)
 
 
-# build more feature
-all_data['append_feature1'] = all_data['IC_17'] * all_data['IC_04']
-all_data['append_feature2'] = all_data['IC_14'] * all_data['IC_13']
-all_data['append_feature3'] = all_data['IC_14'] - all_data['IC_22']
-all_data['append_feature4'] = all_data['IC_22'] - all_data['IC_10']
-all_data['append_feature5'] = all_data['IC_02'] * all_data['IC_15'] * all_data['IC_11']
-'''
+# # build more feature
+# all_data['append_feature1'] = all_data['IC_17'] * all_data['IC_04']
+# all_data['append_feature2'] = all_data['IC_14'] * all_data['IC_13']
+# all_data['append_feature3'] = all_data['IC_14'] - all_data['IC_22']
+# all_data['append_feature4'] = all_data['IC_22'] - all_data['IC_10']
+# all_data['append_feature5'] = all_data['IC_02'] * all_data['IC_15'] * all_data['IC_11']
+
+# increase kurtosis of training data
+# all_data = np.log1p(all_data)
+
 # skew data correctness  and Check the skew of all numerical features
 numeric_feats = all_data.dtypes[all_data.dtypes != "object"].index
 
@@ -75,10 +79,9 @@ skewness = skewness[abs(skewness['Skew']) > 0.75]
 print("There are {} skewed numerical features to Box Cox transform".format(skewness.shape[0]))
 
 skewed_features = skewness.index
-lam = 0.15
 for feat in skewed_features:
-    all_data[feat] = boxcox1p(all_data[feat], lam)
-'''
+    all_data[feat] = boxcox1p(all_data[feat], 0.45)
+
 # standardize
 scaler = StandardScaler()
 all_data = scaler.fit_transform(all_data)
@@ -102,21 +105,21 @@ model = Sequential()
 # input
 # model.add(Convolution1D(nb_filter=512, filter_length=1, input_shape=(input_dim, )))
 # model.add(BatchNormalization())
-model.add(Dense(256, kernel_initializer="lecun_normal", input_shape=(input_dim,)))
+model.add(Dense(512, kernel_initializer="lecun_normal", input_shape=(input_dim,)))
 # model.add(BatchNormalization())
 model.add(Activation('selu'))
-model.add(Dropout(0.2))
+model.add(Dropout(0.4))
 model.add(Dense(512, kernel_initializer="lecun_normal",
                 kernel_regularizer=regularizers.l2(regularize_rate)))
 # model.add(BatchNormalization())
 model.add(Activation('selu'))
 model.add(Dropout(0.4))
 
-model.add(Dense(256, kernel_initializer="lecun_normal",
+model.add(Dense(512, kernel_initializer="lecun_normal",
                 kernel_regularizer=regularizers.l2(regularize_rate)))
 # model.add(BatchNormalization())
 model.add(Activation('selu'))
-model.add(Dropout(0.2))
+model.add(Dropout(0.4))
 
 # model.add(Dense(128, kernel_initializer="lecun_normal",
 #                 kernel_regularizer=regularizers.l2(regularize_rate)))
@@ -137,7 +140,7 @@ checkpoint = ModelCheckpoint(filepath,
                              save_best_only=True,
                              mode='min',
                              save_weights_only=True)
-history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), epochs=30, batch_size=16,
+history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), epochs=30, batch_size=8,
                     callbacks=[checkpoint])
 model.load_weights(filepath)
 

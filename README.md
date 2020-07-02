@@ -1,9 +1,9 @@
 # Kaggle_TReNDS_Neuroimaging
-kaggle competition hosy by GSU/TReNDS
+kaggle competition hosy by GSU/TReNDS<br>
 https://www.kaggle.com/c/trends-assessment-prediction
 ## Reference 
-[1] https://www.kaggle.com/mercury01/pca-base-keras-nn-nae-metric
-[2] https://www.kaggle.com/hemavivekanandan/trends-eda-dnn-for-predicting-age
+[1] https://www.kaggle.com/mercury01/pca-base-keras-nn-nae-metric<br>
+[2] https://www.kaggle.com/hemavivekanandan/trends-eda-dnn-for-predicting-age<br>
 [3] https://www.kaggle.com/kmatsuyama/simple-nn-baseline-using-keras
 
 ## Introduction 
